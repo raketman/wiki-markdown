@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use App\Model\WikiItem;
-use http\Exception\RuntimeException;
+use App\Helper\DirectoryParser;
+use \RuntimeException;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class Extractor {

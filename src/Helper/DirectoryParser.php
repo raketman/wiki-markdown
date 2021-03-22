@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Helper;
 
 use App\Enum\WikiType;
 use App\Model\WikiItem;
@@ -17,7 +17,7 @@ class DirectoryParser {
     {
         $childs = $this->readDir($this->wikiDir);
 
-        return new WikiItem(WikiType::DIR, $this->wikiDir, $this->getNameFromMeta($this->wikiDir), $childs);
+        return new WikiItem(WikiType::DIR, $this->getRelativePath($this->wikiDir), $this->getNameFromMeta($this->wikiDir), $childs);
     }
 
 
@@ -35,17 +35,19 @@ class DirectoryParser {
                 continue;
             }
 
+            $path = $this->getRelativePath($item->getPathname());
+
             if ($item->isDir()) {
                 $result[] = new WikiItem(
                     WikiType::DIR,
-                    $item->getPathname(),
+                    $path,
                     $this->getNameFromMeta($item->getPathname()),
                     $this->readDir($item->getPathname())
                 );
             } else {
                 $result[] = new WikiItem(
                     WikiType::FILE,
-                    $item->getPathname(),
+                    $path,
                     $this->getNameFromMarkdown($item->getPathname())
                 );
             }
@@ -58,7 +60,12 @@ class DirectoryParser {
 
     private function getNameFromMeta($dir)
     {
-        return file_get_contents($dir . '/.meta');
+        $res = fopen($dir . '/.meta', 'r');
+
+        $name = fgets($res);
+        fclose($res);
+
+        return $this->clean(str_replace('#', '', $name));
     }
 
     private function getNameFromMarkdown($file)
@@ -68,7 +75,18 @@ class DirectoryParser {
         $name = fgets($res);
         fclose($res);
 
-        return str_replace('#', '', $name);
+        return $this->clean(str_replace('#', '', $name));
+    }
+
+
+    private function getRelativePath($path)
+    {
+        return str_replace($this->wikiDir, '', $path);
+    }
+
+    private function clean($str)
+    {
+        return str_replace([PHP_EOL, "\r\n"], "", $str);
     }
 }
 
