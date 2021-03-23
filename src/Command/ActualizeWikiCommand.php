@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Service\Extractor;
+use App\Service\SearchExporter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,9 +13,14 @@ class ActualizeWikiCommand extends Command
     /** @var Extractor  */
     private $extractor;
 
-    public function __construct(Extractor $extractor)
+    /** @var SearchExporter  */
+    private $searchExporter;
+
+    public function __construct(Extractor $extractor, SearchExporter $searchExporter)
     {
         $this->extractor = $extractor;
+        $this->searchExporter = $searchExporter;
+
         parent::__construct();
     }
 
@@ -30,6 +36,8 @@ class ActualizeWikiCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->extractor->extract();
+
+        $this->searchExporter->export();
         return 0;
     }
 }

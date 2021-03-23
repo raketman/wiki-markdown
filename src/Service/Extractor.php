@@ -6,7 +6,7 @@ use App\Helper\DirectoryParser;
 use \RuntimeException;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class Extractor {
+final class Extractor {
 
     private $cacheStructureFile, $sourceDir;
 
@@ -37,6 +37,27 @@ class Extractor {
         if (false === file_put_contents($this->cacheStructureFile, $json)) {
             throw new \RuntimeException(error_get_last()['message'], error_get_last()['type']);
         }
+    }
+
+    public function getListContent()
+    {
+        if (!file_exists($this->cacheStructureFile)) {
+            $this->extractor->extract();
+        }
+
+        return file_get_contents($this->cacheStructureFile);
+    }
+
+    public function getPageContent($page)
+    {
+        $pagePath = sprintf('%s%s',$this->sourceDir, $page);
+
+        if (!file_exists($pagePath)) {
+            throw new \RuntimeException("Не найдена страница", 500);
+        } else {
+            return file_get_contents($pagePath);
+        }
+
     }
 
 

@@ -37,3 +37,11 @@ services:
         bind:
             $sourceDir: '%wiki_source_dir%'
             $cacheStructureFile: '%wiki_cache_structure_file%'
+
+    App\Service\SearchExporter:
+        bind:
+            $sourceDir: '%wiki_source_dir%'
+
+    MeiliSearch\Client:
+        bind:
+            $url: '%env(MEILISEARCH)%'

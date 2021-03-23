@@ -10,3 +10,4 @@
 ###< symfony/framework-bundle ###
 /assets/node_moduls
 .idea
+docker/volumes
