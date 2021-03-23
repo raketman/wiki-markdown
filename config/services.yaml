@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    wiki_source_dir: '%kernel.project_dir%/docs'
+    wiki_source_dir: '%kernel.project_dir%/%env(DOCS_DIR)%'
     wiki_cache_structure_file: '%kernel.project_dir%/var/cache/wiki/structure.json'
 
 services:
