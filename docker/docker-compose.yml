@@ -1,0 +1,11 @@
+version: '3'
+services:
+    app-search:
+        restart: unless-stopped
+        image: getmeili/meilisearch
+        volumes:
+            - ./volumes/meilisearch:/data.ms
+        expose:
+            - 7700
+        ports:
+            - 56789:7700
