@@ -37,11 +37,11 @@ final class SearchExporter {
         try {
             $index = $this->meili->getIndex(SearchIndex::PAGE);
             $index->delete();
+        } catch (\Throwable $e) {
         } finally {
             $index = $this->meili->createIndex(SearchIndex::PAGE);
         }
 
-        $index = $this->meili->index(SearchIndex::PAGE);
         $documents = $this->getDocuments($data);
         $index->addDocuments($documents);
     }
