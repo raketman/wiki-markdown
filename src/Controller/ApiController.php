@@ -58,9 +58,7 @@ class ApiController extends AbstractController
      */
     public function getSearch(Request $request)
     {
-        return new JsonResponse([
-            'result'   => $this->searchExporter->search($request->get('query'))
-        ]);
+        return new JsonResponse($this->searchExporter->search($request->get('query')));
     }
 }
 
