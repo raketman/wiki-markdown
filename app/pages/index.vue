@@ -1,37 +1,42 @@
 <template>
   <div class="container">
     <div>
-      <Logo />
-      <h1 class="title">
-        app
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation!!
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
+      <Search></Search>
+      <Menu></Menu>
+      <Page></Page>
     </div>
   </div>
 </template>
 
 <script>
+function findFile(childs) {
+  for (var child in childs) {
+    var item = childs[child];
+
+    if (item.type === 'file') {
+      return item;
+    }
+
+    item = findFile(item.childs);
+    if (item) {
+      return item;
+    }
+  }
+
+  return null;
+}
+
 export default {
   async asyncData ({ app, route, params, error, store }) {
     try {
       await store.dispatch('wiki/list')
+
+      // Выберем первый
+      const item = findFile(store.getters['wiki/list'].childs);
+      if (item) {
+          store.dispatch('wiki/page', item)
+      }
+
     } catch (err) {
       console.log(err)
       return error({
