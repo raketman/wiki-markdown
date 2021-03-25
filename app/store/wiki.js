@@ -28,7 +28,6 @@ const getters = {
 
 const mutations = {
   list(state, wiki) {
-    console.log(wiki)
     state.wiki = wiki
   },
   search(state, search) {
@@ -42,7 +41,8 @@ const mutations = {
   },
   select(state, item) {
     state.selected = item;
-    // Закроем все дочерние
+
+    //TODO:!! Закроем все дочерние
     if (item.type === 'dir') {
 
     } else {

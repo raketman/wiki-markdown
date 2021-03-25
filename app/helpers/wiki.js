@@ -19,6 +19,11 @@ function isFile(item)
     return item.type === 'file';
 }
 
+function isMarkdown(item)
+{
+  return item.options && (item.options.extension === 'md' || item.options.extension === 'markdow');
+}
+
 function findWikiBy(wiki, key, value)
 {
   if (wiki[key] === value) {
@@ -67,5 +72,6 @@ export default {
   isFile: isFile,
   makeMap: makeMap,
   findWikiBy: findWikiBy,
-  buildMenu: buildMenu
+  buildMenu: buildMenu,
+  isMarkdown: isMarkdown,
 }
