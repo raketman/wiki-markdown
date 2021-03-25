@@ -12,18 +12,19 @@ class WikiItem
 
     private $name;
 
-    private $extension;
+    /** @var WikiOption  */
+    private $options;
 
     /** @var WikiItem[] */
     private $childs;
 
-    public function __construct($type, $extension, $path, $name, array $childs = []) {
+    public function __construct($type, $path, $name, WikiOption $options , array $childs = []) {
         $this->id = md5($path);
         $this->path = $path;
         $this->type = $type;
         $this->name = $name;
         $this->childs = $childs;
-        $this->extension = $extension;
+        $this->options = $options;
     }
 
     /**
@@ -67,11 +68,11 @@ class WikiItem
     }
 
     /**
-     * @return mixed
+     * @return WikiOption
      */
-    public function getExtension()
+    public function getOptions(): WikiOption
     {
-        return $this->extension;
+        return $this->options;
     }
 
 }

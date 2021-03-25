@@ -4,6 +4,7 @@ namespace App\Helper;
 
 use App\Enum\WikiType;
 use App\Model\WikiItem;
+use App\Model\WikiOption;
 
 class DirectoryParser {
     private $wikiDir;
@@ -17,7 +18,12 @@ class DirectoryParser {
     {
         $childs = $this->readDir($this->wikiDir);
 
-        return new WikiItem(WikiType::DIR, WikiType::DIR, $this->getRelativePath($this->wikiDir), $this->getNameFromMeta($this->wikiDir), $childs);
+        return new WikiItem(
+            WikiType::DIR,
+            $this->getRelativePath($this->wikiDir),
+            $this->getNameFromMeta($this->wikiDir),
+            (new WikiOption())->setExtension(WikiType::DIR),
+            $childs);
     }
 
 
@@ -40,17 +46,17 @@ class DirectoryParser {
             if ($item->isDir()) {
                 $result[] = new WikiItem(
                     WikiType::DIR,
-                    WikiType::DIR,
                     $path,
                     $this->getNameFromMeta($item->getPathname()),
+                    (new WikiOption())->setExtension(WikiType::DIR),
                     $this->readDir($item->getPathname())
                 );
             } else {
                 $result[] = new WikiItem(
                     WikiType::FILE,
-                    pathinfo($item->getPathname(), PATHINFO_EXTENSION),
                     $path,
-                    $this->getNameFromMarkdown($item->getPathname())
+                    $this->getNameFromMarkdown($item->getPathname()),
+                    (new WikiOption())->setExtension(pathinfo($item->getPathname(), PATHINFO_EXTENSION)),
                 );
             }
 

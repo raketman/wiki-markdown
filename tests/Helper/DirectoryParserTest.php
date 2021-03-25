@@ -14,11 +14,13 @@ class DirectoryParserTest extends KernelTestCase
 
         $data = $parser->parse();
         $this->assertEquals("", $data->getPath());
+        $this->assertEquals("Корневая папка", $data->getName());
 
         $this->assertEquals(3, count($data->getChilds()));
 
         $first = $data->getChilds()[0];
         $this->assertEquals("/api.markdown", $first->getPath());
-        $this->assertEquals("markdown", $first->getExtension());
+        $this->assertEquals("markdown", $first->getOptions()->getExtension());
+
     }
 }
