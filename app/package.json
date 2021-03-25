@@ -9,6 +9,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@adapttive/vue-markdown": "^4.0.1",
     "@nuxtjs/axios": "^5.13.1",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
