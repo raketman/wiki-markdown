@@ -1,11 +1,8 @@
 <template>
   <div>
-    SEARCH
+    <b-button v-b-toggle.sidebar-1>Toggle Sidebar</b-button>
     <input v-model="query" v-on:keyup="search"/>
-    <ul>
-      <li>smallblock1</li>
-      <li>smallblock2</li>
-    </ul>
+
   </div>
 </template>
 

@@ -2,6 +2,7 @@ const state = () => ({
   wiki: null,
   search: [],
   page: null,
+  selected: null,
   query: ""
 })
 
@@ -10,11 +11,17 @@ const getters = {
   list(state) {
     return state.wiki
   },
+  query(state) {
+    return state.query
+  },
   search(state) {
     return state.search
   },
   page(state) {
     return state.page
+  },
+  selected(state) {
+    return state.selected
   }
 }
 
@@ -34,6 +41,7 @@ const mutations = {
     state.query = query
   },
   select(state, item) {
+    state.selected = item;
     // Закроем все дочерние
     if (item.type === 'dir') {
 
