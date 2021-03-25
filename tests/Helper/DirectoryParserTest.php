@@ -19,5 +19,6 @@ class DirectoryParserTest extends KernelTestCase
 
         $first = $data->getChilds()[0];
         $this->assertEquals("/api.markdown", $first->getPath());
+        $this->assertEquals("markdown", $first->getExtension());
     }
 }

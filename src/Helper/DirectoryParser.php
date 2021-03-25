@@ -17,7 +17,7 @@ class DirectoryParser {
     {
         $childs = $this->readDir($this->wikiDir);
 
-        return new WikiItem(WikiType::DIR, $this->getRelativePath($this->wikiDir), $this->getNameFromMeta($this->wikiDir), $childs);
+        return new WikiItem(WikiType::DIR, WikiType::DIR, $this->getRelativePath($this->wikiDir), $this->getNameFromMeta($this->wikiDir), $childs);
     }
 
 
@@ -40,6 +40,7 @@ class DirectoryParser {
             if ($item->isDir()) {
                 $result[] = new WikiItem(
                     WikiType::DIR,
+                    WikiType::DIR,
                     $path,
                     $this->getNameFromMeta($item->getPathname()),
                     $this->readDir($item->getPathname())
@@ -47,6 +48,7 @@ class DirectoryParser {
             } else {
                 $result[] = new WikiItem(
                     WikiType::FILE,
+                    pathinfo($item->getPathname(), PATHINFO_EXTENSION),
                     $path,
                     $this->getNameFromMarkdown($item->getPathname())
                 );
@@ -60,7 +62,13 @@ class DirectoryParser {
 
     private function getNameFromMeta($dir)
     {
-        $res = fopen($dir . '/.meta', 'r');
+        $metaFile = $dir . '/.meta';
+        if (!file_exists($metaFile)) {
+            $paths = explode('/', $dir);
+            return end($paths);
+        }
+
+        $res = fopen($metaFile, 'r');
 
         $name = fgets($res);
         fclose($res);

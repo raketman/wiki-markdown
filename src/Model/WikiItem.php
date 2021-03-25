@@ -12,15 +12,18 @@ class WikiItem
 
     private $name;
 
+    private $extension;
+
     /** @var WikiItem[] */
     private $childs;
 
-    public function __construct($type, $path, $name, array $childs = []) {
+    public function __construct($type, $extension, $path, $name, array $childs = []) {
         $this->id = md5($path);
         $this->path = $path;
         $this->type = $type;
         $this->name = $name;
         $this->childs = $childs;
+        $this->extension = $extension;
     }
 
     /**
@@ -61,6 +64,14 @@ class WikiItem
     public function getId(): string
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExtension()
+    {
+        return $this->extension;
     }
 
 }
