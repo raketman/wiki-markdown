@@ -21,7 +21,8 @@ function isFile(item)
 
 function isMarkdown(item)
 {
-  return item.options && (item.options.extension === 'md' || item.options.extension === 'markdow');
+  console.log(item);
+  return item.options && (item.options.extension === 'md' || item.options.extension === 'markdown');
 }
 
 function findWikiBy(wiki, key, value)

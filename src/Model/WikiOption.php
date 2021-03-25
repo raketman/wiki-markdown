@@ -20,7 +20,7 @@ class WikiOption
      */
     public function setExtension($extension)
     {
-        $this->extension = $extension;
+        $this->extension = strtolower($extension);
         return $this;
     }
 
