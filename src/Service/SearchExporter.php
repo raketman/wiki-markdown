@@ -63,7 +63,7 @@ final class SearchExporter {
             $result[] = [
                 'id'        => $item->getId(),
                 'content'   => $this->extractor->getPageContent($item->getPath()),
-                'title'     => $item->getName(),
+                'name'      => $item->getName()
             ];
         }
 
