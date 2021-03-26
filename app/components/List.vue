@@ -13,14 +13,6 @@ import wikiHelper from './../helpers/wiki'
 
 export default {
   name: "List",
-  computed: {
-    isLoading() {
-     return this.$store.getters['wiki/page'] === null
-    },
-    content() {
-      return this.$store.getters['wiki/page'];
-    }
-  },
   methods: {
     findWiki(item) {
       return wikiHelper.findWikiBy(this.$store.getters['wiki/list'], 'id', item.id)
