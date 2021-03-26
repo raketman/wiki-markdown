@@ -1,10 +1,6 @@
 <template>
   <div>
     <sidebar-menu :menu="items" @toggle-collapse="onToggleCollapse" @item-click="onItemClick"/>
-    <!--div v-html="this.$store.getters['wiki/list'].name"></div>
-    <div v-for="item in this.$store.getters['wiki/list'].childs">
-        <MenuSub :item="item"></MenuSub>
-    </div-->
   </div>
 </template>
 
@@ -31,6 +27,8 @@ export default {
   computed: {
       items () {
         var wiki = this.$store.getters['wiki/list'];
+
+        var selected = this.$store.getters['wiki/selected'];
 
         var result = [{
           header: true,

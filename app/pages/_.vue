@@ -6,19 +6,14 @@
             <Search></Search>
         </div>
       </div>
-      <div class="row">
-        <div class="col-sm">
-          <Breadcrumb></Breadcrumb>
-        </div>
-      </div>
 
       <div class="row"  v-if="isPage">
-        <div class="col-sm">
+        <div class="col-sm  mt-3">
           <Page></Page>
         </div>
       </div>
       <div class="row" v-if="isList">
-        <div class="col-sm">
+        <div class="col-sm mt-3">
           <List></List>
         </div>
       </div>
@@ -39,10 +34,11 @@ export default {
 
       // Выберем первый
       var item = wikiHelper.findWikiBy(store.getters['wiki/list'], 'path', route.path);
-      console.log(item);
       if (!item) {
           item = wikiHelper.findFirstFile(store.getters['wiki/list'].childs);
       }
+
+      // TODO, если папка, то показать режим поиск
 
       store.dispatch('wiki/page', item)
 
