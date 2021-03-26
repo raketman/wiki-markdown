@@ -1,27 +1,46 @@
 <template>
   <div>
-    <b-button v-b-toggle.sidebar-1>Toggle Sidebar</b-button>
-    <input v-model="query" v-on:keyup="search"/>
-
+    <div class="fias-container fias-container-multi">
+      <ul class="fias-choices">
+        <li class="search-field" v-bind:class="{ 'fias-width100': isInputWidth100 }">
+          <input v-model="searchField"  v-bind:class="{ 'fias-width100': isInputWidth100 }" type="text" placeholder="Поиск"  autocomplete="off" v-on:keyup="search" >
+        </li>
+      </ul>
+      <div class="fias-stop" v-show="isSearchField" v-on:click="reset"></div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: "Search",
-  data()  {
-    return {
-      query: ""
-    }
+  computed: {
+    isInputWidth100() {
+      return true
+    },
+    isSearchField() {
+      return this.$store.getters['wiki/query']
+    },
+    searchField: {
+      get () {
+        return this.$store.getters['wiki/query']
+      },
+      set (value) {
+        this.$store.commit('wiki/query', value)
+      }
+    },
   },
   methods: {
+    reset() {
+      this.$store.commit('wiki/query', "");
+    },
     search() {
-      this.$store.dispatch("wiki/search", this.query)
+      this.$store.dispatch("wiki/search", this.searchField)
     }
   }
 }
 </script>
 
 <style scoped>
-
+@import './../assets/css/field.css';
 </style>
