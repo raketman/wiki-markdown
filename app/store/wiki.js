@@ -41,13 +41,6 @@ const mutations = {
   },
   select(state, item) {
     state.selected = item;
-
-    //TODO:!! Закроем все дочерние
-    if (item.type === 'dir') {
-
-    } else {
-      //сделаем активным в state
-    }
   },
 }
 

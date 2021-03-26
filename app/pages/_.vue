@@ -1,7 +1,7 @@
 <template>
   <div id="wrapper" v-bind:class="{ full: !menuCollapsed, collapsed: menuCollapsed }">
     <div class="container-fluid">
-      <div class="row">
+      <div class="row mt-3">
         <div class="col-sm">
             <Search></Search>
         </div>
@@ -31,15 +31,14 @@ export default {
       if (!store.getters['wiki/list']) {
         await store.dispatch('wiki/list')
       }
+      store.commit('wiki/query', "");
 
       // Выберем первый
       var item = wikiHelper.findWikiBy(store.getters['wiki/list'], 'path', route.path);
       if (!item) {
           item = wikiHelper.findFirstFile(store.getters['wiki/list'].childs);
       }
-
-      // TODO, если папка, то показать режим поиск
-
+      
       store.dispatch('wiki/page', item)
 
     } catch (err) {

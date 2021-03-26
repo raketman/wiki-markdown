@@ -21,7 +21,6 @@ function isFile(item)
 
 function isMarkdown(item)
 {
-  console.log(item);
   return item.options && (item.options.extension === 'md' || item.options.extension === 'markdown');
 }
 
