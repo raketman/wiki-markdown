@@ -38,7 +38,7 @@ export default {
       if (!item) {
           item = wikiHelper.findFirstFile(store.getters['wiki/list'].childs);
       }
-      
+
       store.dispatch('wiki/page', item)
 
     } catch (err) {

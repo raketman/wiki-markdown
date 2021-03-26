@@ -1,12 +1,10 @@
 <template>
   <div>
-    <ul>
-      <li v-for="item in this.$store.getters['wiki/search']">
-        <div style="zoom: 30%" v-on:click="select(item)">
+    <div>
+      <div v-for="item in this.$store.getters['wiki/search']" class="list-item" v-on:click="select(item)">
           <Content :item="findWiki(item)" :content="item.content"></Content>
-        </div>
-      </li>
-    </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -38,5 +36,14 @@ export default {
 </script>
 
 <style scoped>
-
+.list-item {
+  width: auto;
+  float: left;
+  border: 1px solid lightblue;
+  border-radius: 4px;
+  zoom: 40%;
+  padding: 15px;
+  margin: 15px;
+  cursor: pointer;
+}
 </style>
