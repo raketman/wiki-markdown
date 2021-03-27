@@ -33,9 +33,12 @@ export default {
   float: left;
   border: 1px solid lightblue;
   border-radius: 4px;
-  zoom: 40%;
+  zoom: 60%;
   padding: 15px;
   margin: 15px;
   cursor: pointer;
+  max-height: 300px;
+  max-width: 500px;
+  overflow: auto;
 }
 </style>
