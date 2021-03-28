@@ -6,6 +6,7 @@ use App\Service\Extractor;
 use App\Service\SearchExporter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ActualizeWikiCommand extends Command
@@ -28,6 +29,7 @@ class ActualizeWikiCommand extends Command
     {
         $this
             ->setName('app:wiki:actualize')
+            ->addOption('force', null, InputOption::VALUE_OPTIONAL, 'Обновляем, если только изменилось время создания файлов', false)
             ->setDescription('Обновляем справочник вики')
         ;
 
@@ -35,6 +37,11 @@ class ActualizeWikiCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (false === $input->getOption('force')) {
+            if (false === $this->extractor->hasChange()) {
+                return 0;
+            }
+        }
         $this->extractor->extract();
 
         $this->searchExporter->export();

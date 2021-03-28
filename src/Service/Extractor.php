@@ -26,6 +26,23 @@ final class Extractor {
         }
     }
 
+    public function hasChange(): bool
+    {
+        if (false === file_exists($this->cacheStructureFile)) {
+            return true;
+        }
+
+        $time = filemtime ($this->cacheStructureFile);
+
+
+        $dirChangeTime = (new DirectoryParser($this->sourceDir))->getLastChangeTime($time);
+
+
+
+        return $time < $dirChangeTime;
+    }
+
+
     public function extract(): void
     {
         $directoryParser = new DirectoryParser($this->sourceDir);

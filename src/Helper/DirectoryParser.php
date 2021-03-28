@@ -26,6 +26,33 @@ class DirectoryParser {
             $childs);
     }
 
+    public function getLastChangeTime($lastTime, $dir = null)
+    {
+        $dir = $dir ? : $this->wikiDir;
+
+        $iterator = new \DirectoryIterator($dir);
+
+        while ($iterator->valid()) {
+            $item = $iterator->current();
+
+            if ($item->isDot()) {
+                $iterator->next();
+                continue;
+            }
+
+            if ($item->isDir()) {
+                $lastTime = max($this->getLastChangeTime($lastTime, $item->getPathname()), $lastTime);
+            } else {
+                $lastTime = max($iterator->getMTime(), $lastTime);
+            }
+
+            $iterator->next();
+        }
+
+
+        return $lastTime;
+    }
+
 
     private function readDir($dir)
     {
@@ -56,7 +83,7 @@ class DirectoryParser {
                     WikiType::FILE,
                     $path,
                     $this->getNameFromMarkdown($item->getPathname()),
-                    (new WikiOption())->setExtension(pathinfo($item->getPathname(), PATHINFO_EXTENSION)),
+                    (new WikiOption())->setExtension(pathinfo($item->getPathname(), PATHINFO_EXTENSION))
                 );
             }
 
