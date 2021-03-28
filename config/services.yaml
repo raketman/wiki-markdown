@@ -33,6 +33,12 @@ services:
     App\Command\ActualizeWikiCommand:
         tags: ['console.command']
 
+    App\Command\StartDaemonCommand:
+        calls:
+            - ['setLogger', ['@logger']]
+        tags: [ 'console.command' ]
+
+
     App\Service\Extractor:
         bind:
             $sourceDir: '%wiki_source_dir%'
