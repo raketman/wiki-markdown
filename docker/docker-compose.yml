@@ -6,8 +6,8 @@ services:
     app-search:
         restart: unless-stopped
         image: getmeili/meilisearch
-        volumes:
-            - ./volumes/meilisearch:/data.ms
+#        volumes:
+#            - ./volumes/meilisearch:/data.ms
         expose:
             - 7700
         ports:

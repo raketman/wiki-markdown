@@ -2,18 +2,14 @@
 declare(ticks = 1);
 namespace App\Command;
 
-use Raketman\RoadrunnerDaemon\Service\PoolResolverInterface;
-use Raketman\RoadrunnerDaemon\Structure\BackgroundProcess;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Psr\Log\LoggerInterface;
 
 use Symfony\Component\Process\Process;
-use Symfony\Component\Yaml\Parser;
 
 class StartDaemonCommand extends Command
 {
@@ -34,7 +30,7 @@ class StartDaemonCommand extends Command
     /** @var float */
     protected $usleepDelay;
 
-    /** @var BackgroundProcess[] */
+    /** @var Process[] */
     protected $processList = [];
 
     /** @var \Psr\Log\LoggerInterface */
@@ -64,7 +60,7 @@ class StartDaemonCommand extends Command
         $this->setName('app:daemon:start')
             ->setDescription('Запускает демон, который запустит и будет следить за исполнением сконфигурированных фоновых процессов')
             ->addOption('max-execution-time', null, InputOption::VALUE_REQUIRED, 'Максимальное время выполнения команды в секундах', 360000)
-            ->addOption('pid-file', null, InputOption::VALUE_REQUIRED, 'PID файл', __DIR__ . '/../run/pid')
+            ->addOption('pid-file', null, InputOption::VALUE_REQUIRED, 'PID файл', __DIR__ . '/../../run/pid')
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Время задержки между внутренними циклами для экономии процессора', 1000)
         ;
     }
@@ -111,7 +107,9 @@ class StartDaemonCommand extends Command
         $this->logger->debug("Going to start backgroud processes", ['count' => count($this->processList)]);
 
         // Запустим все фоновые процессы асинхронно
-        foreach ($this->processList as $key => $p) {
+        foreach ($this->processList as $key => $item) {
+            /* @var $p Process */
+            $p = $item['process'];
             $p->start();
             $this->logger->info("start $key command");
 
@@ -119,6 +117,13 @@ class StartDaemonCommand extends Command
             // чтобы не все сразу навалились на проц
             usleep($this->usleepDelay);
         }
+
+        // Запустим процесс актуализации
+        $actualizeCommand = sprintf(
+            '/usr/bin/php  %s/../bin/console app:wiki:actualize',
+            __DIR__
+        );
+        (new Process([$actualizeCommand]))->start();
 
         $this->logger->debug("Backgroud processes started");
 
@@ -159,12 +164,12 @@ class StartDaemonCommand extends Command
         $processes = [];
 
         $serverCommand = sprintf(
-            'php %s/../bin/console server:run',
+            'php %s/../../bin/console server:run',
             __DIR__
         );
 
         $processes['server'] = [
-            'process'   => new BackgroundProcess($serverCommand),
+            'process'   => new Process([$serverCommand]),
             'interval'  => 0
         ];
 
@@ -173,7 +178,7 @@ class StartDaemonCommand extends Command
         );
 
         $processes['meilisearch'] = [
-            'process'   =>  new BackgroundProcess($meilisearchCommand),
+            'process'   =>  new Process([$meilisearchCommand]),
             'interval'  => 0
         ];
 
@@ -201,7 +206,10 @@ class StartDaemonCommand extends Command
         ]);
 
         // Грохнем все процессы
-        foreach ($this->processList as $p) {
+        foreach ($this->processList as  $item) {
+            /* @var $p Process */
+            $p = $item['process'];
+
             $p->stop();
         }
 

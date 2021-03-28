@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Enum\ContentType;
 use App\Service\Extractor;
 use App\Service\SearchExporter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
