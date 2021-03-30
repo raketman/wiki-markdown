@@ -1,7 +1,11 @@
-FROM php:7.4-cli-alpine3.13
+#FROM php:7.4-cli-alpine3.13
+FROM php:7.4-alpine
 
 RUN mkdir -p /var/lib/meilisearch
-RUN curl -L -o /var/lib/meilisearch  https://install.meilisearch.com | sh
+RUN curl -L -o /var/lib/meilisearch/meilisearch  https://install.meilisearch.com | sh
+
+RUN mkdir -p /var/lib/symfony
+RUN curl -L -o /var/lib/symfony https://get.symfony.com/cli/installer
 #RUN  wget -c https://get.symfony.com/cli/installer  -O - | sh
 #RUN curl -sS https://get.symfony.com/cli/installer | sh
 #RUN curl -L -o /var/lib/symfony https://get.symfony.com/cli/installer
