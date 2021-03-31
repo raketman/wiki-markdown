@@ -20,7 +20,7 @@ export default {
     select(item) {
       var wiki = wikiHelper.findWikiBy(this.$store.getters['wiki/list'], 'id', item.id);
       this.$store.commit('wiki/query', "");
-      this.$router.push('/page' +  wiki.path)
+      this.$router.push(wiki.path)
     }
   }
 }

@@ -34,7 +34,7 @@ export default {
       store.commit('wiki/query', "");
 
       // Выберем первый
-      var routePath = decodeURI(route.path.substring(5));
+      var routePath = decodeURI(route.path);
       var item = null;
       if (routePath) {
         var item = wikiHelper.findWikiBy(store.getters['wiki/list'], 'path', routePath);

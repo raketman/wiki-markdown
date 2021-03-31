@@ -13,7 +13,7 @@ class MainController extends AbstractController
 
     /**
      * @Route(methods={"GET"}, path="/")
-     * @Route(methods={"GET"}, path="/page{page}")
+     * @Route(methods={"GET"}, path="{page}")
      */
     public function getIndex()
     {
