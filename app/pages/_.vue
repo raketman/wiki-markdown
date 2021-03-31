@@ -34,7 +34,12 @@ export default {
       store.commit('wiki/query', "");
 
       // Выберем первый
-      var item = wikiHelper.findWikiBy(store.getters['wiki/list'], 'path', route.path);
+      var routePath = decodeURI(route.path.substring(5));
+      var item = null;
+      if (routePath) {
+        var item = wikiHelper.findWikiBy(store.getters['wiki/list'], 'path', routePath);
+      }
+
       if (!item) {
           item = wikiHelper.findFirstFile(store.getters['wiki/list'].childs);
       }

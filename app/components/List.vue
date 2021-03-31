@@ -1,9 +1,11 @@
 <template>
   <div>
     <div>
-      <div v-for="item in this.$store.getters['wiki/search']" class="list-item" v-on:click="select(item)">
-          <Content :item="findWiki(item)" :content="item.content"></Content>
-      </div>
+      <nuxt-link  v-for="item in this.$store.getters['wiki/search']" v-bind:to="getUrl(item)" no-prefetch>
+        <div class="list-item">
+            <Content :item="findWiki(item)" :content="item.content"></Content>
+        </div>
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -17,11 +19,10 @@ export default {
     findWiki(item) {
       return wikiHelper.findWikiBy(this.$store.getters['wiki/list'], 'id', item.id)
     },
-    select(item) {
+    getUrl(item) {
       var wiki = wikiHelper.findWikiBy(this.$store.getters['wiki/list'], 'id', item.id);
 
-      this.$store.commit('wiki/query', "");
-      this.$router.push(wiki.path)
+      return '/page' +  wiki.path;
     }
   }
 }

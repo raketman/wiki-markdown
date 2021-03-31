@@ -19,7 +19,6 @@ export default {
   },
   methods: {
     onItemClick(event, item, node) {
-      console.log(item);
       event.preventDefault();
       return false;
     }

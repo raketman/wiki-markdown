@@ -50,7 +50,7 @@ function buildMenu(wiki)
 
 
   if (isFile(wiki)) {
-    item.href = wiki.path;
+    item.href = '/page' + wiki.path;
   } else {
     item.child = [];
 
