@@ -6,7 +6,7 @@ function findFirstFile(childs) {
       return item;
     }
 
-    item = findFile(item.childs);
+    item = findFirstFile(item.childs);
     if (item) {
       return item;
     }
