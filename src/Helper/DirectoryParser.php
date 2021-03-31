@@ -5,6 +5,7 @@ namespace App\Helper;
 use App\Enum\WikiType;
 use App\Model\WikiItem;
 use App\Model\WikiOption;
+use Symfony\Component\Yaml\Yaml;
 
 class DirectoryParser {
     private $wikiDir;
@@ -119,16 +120,15 @@ class DirectoryParser {
             return \end($paths);
         }
 
-        $res = \fopen($metaFile, 'r');
+        $data = Yaml::parse(file_get_contents($metaFile));
 
-        $name = \fgets($res);
-        \fclose($res);
 
-        return $this->clean(\str_replace('#', '', $name));
+        return $data['title'];
     }
 
     private function getNameFromMarkdown($file)
     {
+        // TODO: первую непустую или из файла .meta?!
         $res = \fopen($file, 'r');
 
         $name = \fgets($res);
