@@ -44,6 +44,8 @@ class ActualizeWikiCommand extends Command
         }
         $this->extractor->extract();
 
+        //  переместим все картинки в public!
+
         $this->searchExporter->export();
         return 0;
     }

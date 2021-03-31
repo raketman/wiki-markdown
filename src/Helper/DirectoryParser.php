@@ -40,6 +40,8 @@ class DirectoryParser {
                 continue;
             }
 
+            // если картинка, то пропустим (либо отдельной опцией)
+
             if ($item->isDir()) {
                 $lastTime = max($this->getLastChangeTime($lastTime, $item->getPathname()), $lastTime);
             } else {
