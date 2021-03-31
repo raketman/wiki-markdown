@@ -72,14 +72,23 @@ class DirectoryParser {
 
             $path = $this->getRelativePath($item->getPathname());
 
+            if (!$item->isDir() && 0 !== strpos(mime_content_type ($item->getPathname()), 'text/')) {
+                $iterator->next();
+                continue;
+            }
+
             if ($item->isDir()) {
-                $result[] = new WikiItem(
-                    WikiType::DIR,
-                    $path,
-                    $this->getNameFromMeta($item->getPathname()),
-                    (new WikiOption())->setExtension(WikiType::DIR),
-                    $this->readDir($item->getPathname())
-                );
+                $childs = $this->readDir($item->getPathname());
+
+                if ($childs) {
+                    $result[] = new WikiItem(
+                        WikiType::DIR,
+                        $path,
+                        $this->getNameFromMeta($item->getPathname()),
+                        (new WikiOption())->setExtension(WikiType::DIR),
+                        $childs
+                    );
+                }
             } else {
                 $result[] = new WikiItem(
                     WikiType::FILE,
