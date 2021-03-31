@@ -60,6 +60,17 @@ class WikiItem
     }
 
     /**
+     * @param WikiItem[] $childs
+     * @return WikiItem
+     */
+    public function setChilds(array $childs): WikiItem
+    {
+        $this->childs = $childs;
+        return $this;
+    }
+
+
+    /**
      * @return string
      */
     public function getId(): string

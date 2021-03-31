@@ -15,4 +15,7 @@ docker/volumes
 .phpunit
 .phpunit.result.cache
 /phpunit.xml
-###< symfony/phpunit-bridge ###
+###< symfony/phpunit-bridge ###\
+
+public/
+!public/index.php

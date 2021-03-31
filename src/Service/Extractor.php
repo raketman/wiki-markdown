@@ -2,22 +2,25 @@
 
 namespace App\Service;
 
+use App\Enum\WikiType;
 use App\Helper\DirectoryParser;
+use App\Model\WikiItem;
 use \RuntimeException;
 use Symfony\Component\Serializer\SerializerInterface;
 
 final class Extractor {
 
-    private $cacheStructureFile, $sourceDir;
+    private $cacheStructureFile, $sourceDir, $publicDir;
 
     /** @var SerializerInterface */
     private $serializer;
 
-    public function __construct(SerializerInterface  $serializer, string $sourceDir, string $cacheStructureFile)
+    public function __construct(SerializerInterface  $serializer, string $sourceDir, string $cacheStructureFile, string $publicDir)
     {
         $this->serializer = $serializer;
         $this->cacheStructureFile = $cacheStructureFile;
         $this->sourceDir = $sourceDir;
+        $this->publicDir = $publicDir;
 
         $dir = dirname($this->cacheStructureFile);
 
@@ -49,6 +52,9 @@ final class Extractor {
 
         $data = $directoryParser->parse();
 
+        $this->copyWiki($data);
+        $data = $this->cleanWiki($data);
+
         $json = $this->serializer->serialize($data, 'json');
 
         if (false === file_put_contents($this->cacheStructureFile, $json)) {
@@ -78,5 +84,68 @@ final class Extractor {
     }
 
 
+    private function copyWiki(WikiItem $wikiItem): void
+    {
+        foreach ($wikiItem->getChilds() as $child) {
+            if ($child->getType() === WikiType::DIR) {
+                $this->copyWiki($child);
+                continue;
+            }
+            if ($child->getType() !== WikiType::RESOURCE) {
+                continue;
+            }
+            $sourceFile = $this->sourceDir . $child->getPath();
+            $distFile = $this->publicDir . $child->getPath();
+            if (!file_exists(dirname($distFile)) && false === \mkdir(dirname($distFile), 0775, true)) {
+                throw new \RuntimeException(error_get_last()['message'], error_get_last()['code']);
+            }
+            if (!\copy($sourceFile, $distFile)) {
+                throw new \RuntimeException(error_get_last()['message'], error_get_last()['code']);
+            }
+            continue;
+
+        }
+
+    }
+
+    private function cleanWiki(WikiItem $wikiItem): WikiItem
+    {
+        $newChilds = [];
+        foreach ($wikiItem->getChilds() as $child) {
+            if ($child->getType() === WikiType::RESOURCE) {
+                continue;
+            }
+
+            if ($child->getType() === WikiType::DIR && !$this->hasFile($child->getChilds())) {
+                continue;
+            }
+
+            $child = $this->cleanWiki($child);
+
+            $newChilds[] = $child;
+        }
+
+        $wikiItem->setChilds($newChilds);
+        return $wikiItem;
+    }
+
+    /**
+     * @param WikiItem[] $wikiItems
+     * @return bool
+     */
+    private function hasFile( $wikiItems): bool
+    {
+        foreach ($wikiItems as $child) {
+            if ($child->getType() === WikiType::FILE) {
+                return true;
+            }
+
+            if ($this->hasFile($child->getChilds())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 

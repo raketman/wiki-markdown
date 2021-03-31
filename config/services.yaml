@@ -43,6 +43,7 @@ services:
         bind:
             $sourceDir: '%wiki_source_dir%'
             $cacheStructureFile: '%wiki_cache_structure_file%'
+            $publicDir: '%kernel.project_dir%/public'
 
     App\Service\SearchExporter:
         bind:
