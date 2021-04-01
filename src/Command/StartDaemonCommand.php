@@ -164,8 +164,7 @@ class StartDaemonCommand extends Command
         $processes = [];
 
         $serverCommand = sprintf(
-            'php %s/../../bin/console server:run',
-            __DIR__
+            'apache2-foreground'
         );
 
         $processes['server'] = [
