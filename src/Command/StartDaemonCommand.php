@@ -163,23 +163,24 @@ class StartDaemonCommand extends Command
     {
         $processes = [];
 
-        $serverCommand = sprintf(
-            'apache2-foreground'
-        );
+        $serverCommand = [
+            '/usr/local/bin/symfony',
+            'serve'
+        ];
 
         $processes['server'] = [
-            'process'   => new Process([$serverCommand]),
+            'process'   => new Process($serverCommand, '/var/www/app'),
             'interval'  => 0
         ];
 
         $meilisearchCommand = sprintf(
-            '/var/lib/meilisearch/meilisearch --http-addr \'127.0.0.1:7700\''
+            'meilisearch --http-addr \'127.0.0.1:7700\''
         );
 
-        $processes['meilisearch'] = [
-            'process'   =>  new Process([$meilisearchCommand]),
-            'interval'  => 0
-        ];
+//        $processes['meilisearch'] = [
+//            'process'   =>  new Process([$meilisearchCommand]),
+//            'interval'  => 0
+//        ];
 
         return $processes;
     }
