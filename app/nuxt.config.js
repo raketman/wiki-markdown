@@ -47,6 +47,15 @@ export default {
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
+  buildDir: './../public/nuxt',
   build: {
+    filenames: {
+      app: ({ isDev, isModern }) => `[name].js`,
+      chunk: ({ isDev, isModern }) => `[name].js`,
+      css: ({ isDev }) => '[name].css',
+      img: ({ isDev }) => '[path][name].[ext]' ,
+      font: ({ isDev }) => '[path][name].[ext]',
+      video: ({ isDev }) => '[path][name].[ext]'
+    }
   }
 }
