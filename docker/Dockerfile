@@ -24,8 +24,24 @@ RUN php -v
 
 
 WORKDIR /var/www/app
+RUN yum -y install git
+RUN git clone https://github.com/raketman/wiki-markdown.git .
 
-COPY ./ ./
+WORKDIR /var/www/app/app
+RUN curl --silent --location https://rpm.nodesource.com/setup_10.x | sudo bash
+RUN yum -y install nodejs
+RUN yum -y install yarn
+
+RUN npm install
+RUN yarn build && yarn generate
+
+
+WORKDIR /var/www/app
+RUN rm -rf /var/www/app/app
+
+RUN composer install
+
+#COPY ./ ./
 
 #установить yarn ?  composer?
 # скачать гитом проект?!

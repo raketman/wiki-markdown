@@ -3,12 +3,10 @@ services:
     #app-php:
     # тут только Dockerfile php + symfony run server
 
-    app-search:
+    wiki-app:
         restart: unless-stopped
-        image: getmeili/meilisearch
-#        volumes:
-#            - ./volumes/meilisearch:/data.ms
-        expose:
-            - 7700
+        build:
+            dockerfile: Dockerfile
+            context: ./
         ports:
-            - 56789:7700
+            - 56788:8000
