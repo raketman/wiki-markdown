@@ -28,18 +28,30 @@ RUN yum -y install git
 RUN git clone https://github.com/raketman/wiki-markdown.git .
 
 WORKDIR /var/www/app/app
-RUN curl --silent --location https://rpm.nodesource.com/setup_10.x | sudo bash
+RUN yum -y install epel-release
+RUN curl -sL https://rpm.nodesource.com/setup_10.x | bash
 RUN yum -y install nodejs
-RUN yum -y install yarn
 
-RUN npm install
-RUN yarn build && yarn generate
+RUN node --version
+RUN npm --save  install
+
+RUN npm run build
+RUN npm run generate
 
 
 WORKDIR /var/www/app
 RUN rm -rf /var/www/app/app
 
-RUN composer install
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php -r "if (hash_file('sha384', 'composer-setup.php') === '756890a4488ce9024fc62c56153228907f1545c228516cbf63f885e036d37e9a59d27d63f46af1d4d07ee0f76181c7d3') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+#RUN php composer.phar install -o --no-dev
+#RUN php composer.phar global require hirak/prestissimo
+RUN php composer.phar install -o  --verbose --ignore-platform-reqs --no-dev --optimize-autoloader --prefer-dist -n
+
+
+WORKDIR /var/www/app/public
 
 #COPY ./ ./
 
@@ -47,5 +59,6 @@ RUN composer install
 # скачать гитом проект?!
 #CMD ["meilisearch"]
 #CMD ["symfony serve"]
-CMD sleep 3000
+#CMD ["php -S localhost:8000 router.php"]
+#CMD sleep 3000
 #CMD yes | php bin/console app:daemon:start

@@ -5,6 +5,7 @@ services:
 
     wiki-app:
         restart: unless-stopped
+        command: sleep 3000
         build:
             dockerfile: Dockerfile
             context: ./
