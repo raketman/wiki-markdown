@@ -19,3 +19,4 @@ docker/volumes
 
 public/
 !public/index.php
+!public/router.php
