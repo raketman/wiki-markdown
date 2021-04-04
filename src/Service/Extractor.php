@@ -65,7 +65,7 @@ final class Extractor {
     public function getListContent()
     {
         if (!file_exists($this->cacheStructureFile)) {
-            $this->extractor->extract();
+            $this->extract();
         }
 
         return file_get_contents($this->cacheStructureFile);
