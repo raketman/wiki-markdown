@@ -51,6 +51,19 @@ function buildMenu(wiki)
 
   if (isFile(wiki)) {
     item.href = wiki.id;
+
+    if (wiki.options.links.length > 0) {
+      item.child = [];
+
+      for (var linkKey in wiki.options.links) {
+        var link = wiki.options.links[linkKey];
+        item.child.push({
+          href: wiki.id +'#' + link,
+          title: ' - ' + link,
+          hiddenOnCollapse: true
+        })
+      }
+    }
   } else {
     item.child = [];
 

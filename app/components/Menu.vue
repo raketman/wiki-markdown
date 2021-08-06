@@ -27,8 +27,6 @@ export default {
       items () {
         var wiki = this.$store.getters['wiki/list'];
 
-        var selected = this.$store.getters['wiki/selected'];
-
         var result = [{
           header: true,
           title: wiki.name,
@@ -45,26 +43,6 @@ export default {
   data() {
     return {
       menu: [
-        {
-          header: true,
-          title: 'Main Navigation',
-          hiddenOnCollapse: true
-        },
-        {
-          href: '/',
-          title: 'Dashboard',
-          icon: 'fa fa-user'
-        },
-        {
-          title: 'Charts',
-          icon: 'fa fa-chart-area',
-          child: [
-            {
-              href: '/equeue/api.markdown',
-              title: 'Sub Link'
-            }
-          ]
-        }
       ]
     }
   }

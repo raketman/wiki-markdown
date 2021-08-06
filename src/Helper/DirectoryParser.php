@@ -93,7 +93,9 @@ class DirectoryParser {
                     WikiType::FILE,
                     $path,
                     $this->getNameFromMarkdown($item->getPathname()),
-                    (new WikiOption())->setExtension(pathinfo($item->getPathname(), PATHINFO_EXTENSION))
+                    (new WikiOption())
+                        ->setExtension(pathinfo($item->getPathname(), PATHINFO_EXTENSION))
+                        ->setLinks($this->getLinksFromMarkdown($item->getPathname()))
                 );
             }
 
@@ -134,7 +136,31 @@ class DirectoryParser {
         $name = \fgets($res);
         \fclose($res);
 
-        return $this->clean(\str_replace('#', '', $name));
+        return $this->clean($name);
+    }
+
+
+    private function getLinksFromMarkdown($file)
+    {
+        // TODO: первую непустую или из файла .meta?!
+        $res = \fopen($file, 'r');
+
+        // Пропуска название
+        \fgets($res);
+
+
+        $links = [];
+
+        while(!feof($res)) {
+            $str =  \fgets($res);
+
+            if (strpos($str, '#') === 0) {
+                $links[] = $this->clean($str);
+            }
+        }
+        \fclose($res);
+
+        return $links;
     }
 
 
@@ -145,7 +171,7 @@ class DirectoryParser {
 
     private function clean($str)
     {
-        return \str_replace([PHP_EOL, "\r\n"], "", $str);
+        return \trim(\str_replace([PHP_EOL, "\r\n", "#"], "", $str));
     }
 }
 
