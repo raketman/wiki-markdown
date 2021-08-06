@@ -46,8 +46,7 @@ function buildMenu(wiki)
   var item = {
     title: wiki.name,
     hiddenOnCollapse: true
-  }
-
+  };
 
   if (isFile(wiki)) {
     item.href = wiki.id;
@@ -58,8 +57,8 @@ function buildMenu(wiki)
       for (var linkKey in wiki.options.links) {
         var link = wiki.options.links[linkKey];
         item.child.push({
-          href: wiki.id +'#' + link,
-          title: ' - ' + link,
+          href: wiki.id +'#' + link.code,
+          title: ' - ' + link.title,
           hiddenOnCollapse: true
         })
       }

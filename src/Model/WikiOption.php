@@ -6,6 +6,7 @@ class WikiOption
 {
     private $extension;
 
+    /** @var WikiLink[] */
     private $links = [];
 
     /**
@@ -27,7 +28,7 @@ class WikiOption
     }
 
     /**
-     * @return array
+     * @return WikiLink[]
      */
     public function getLinks(): array
     {
@@ -35,7 +36,7 @@ class WikiOption
     }
 
     /**
-     * @param array $link
+     * @param WikiLink[] $link
      * @return WikiOption
      */
     public function setLinks(array $links): self

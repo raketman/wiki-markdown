@@ -4,6 +4,7 @@ namespace App\Helper;
 
 use App\Enum\WikiType;
 use App\Model\WikiItem;
+use App\Model\WikiLink;
 use App\Model\WikiOption;
 use Symfony\Component\Yaml\Yaml;
 
@@ -154,8 +155,14 @@ class DirectoryParser {
         while(!feof($res)) {
             $str =  \fgets($res);
 
-            if (strpos($str, '#') === 0) {
-                $links[] = $this->clean($str);
+            if (strpos($str, '#') === 0 && strpos($str, '<a') > 0) {
+
+                $returnValue = preg_match_all('/id=\"(.*?)\"/', $str, $matches);
+
+                if (isset($matches[1][0])) {
+                    $links[] = new WikiLink($this->clean($str), $matches[1][0]);
+                }
+
             }
         }
         \fclose($res);
@@ -171,7 +178,7 @@ class DirectoryParser {
 
     private function clean($str)
     {
-        return \trim(\str_replace([PHP_EOL, "\r\n", "#"], "", $str));
+        return \strip_tags(\trim(\str_replace([PHP_EOL, "\r\n", "#"], "", $str)));
     }
 }
 
