@@ -34,7 +34,12 @@ export default {
     reset() {
       this.$store.commit('wiki/query', "");
     },
-    search() {
+    search(e) {
+      if ((e.keyCode && e.keyCode === 27) || (e.code && e.code === 'Escape')) {
+        this.reset();
+        return;
+      }
+
       this.$store.dispatch("wiki/search", this.searchField)
     }
   }
