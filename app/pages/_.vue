@@ -37,7 +37,7 @@ export default {
       var routePath = decodeURI(route.path);
       var item = null;
       if (routePath) {
-        var item = wikiHelper.findWikiBy(store.getters['wiki/list'], 'path', routePath);
+        var item = wikiHelper.findWikiBy(store.getters['wiki/list'], 'id', routePath);
       }
 
       if (!item) {

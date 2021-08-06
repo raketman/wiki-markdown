@@ -50,7 +50,7 @@ const actions =  {
     commit('list', wiki)
   },
   async page ({ commit }, item) {
-    const content = await this.$axios.$get('/page.json?page=' + item.path)
+    const content = await this.$axios.$get('/page.json?page=' + item.id)
     commit('page', content)
     commit('select', item)
   },

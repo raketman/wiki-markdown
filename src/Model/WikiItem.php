@@ -19,7 +19,7 @@ class WikiItem
     private $childs;
 
     public function __construct($type, $path, $name, WikiOption $options , array $childs = []) {
-        $this->id = md5($path);
+        $this->id = str_replace('\\', '/', $path);
         $this->path = $path;
         $this->type = $type;
         $this->name = $name;
