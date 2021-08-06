@@ -37,6 +37,12 @@ export default {
           result.push(wikiHelper.buildMenu(wiki.childs[child]))
         }
 
+        // чтобы при открытии / открывался нужный элемент
+        if (result[1]) {
+          result[1].alias = ['/'];
+        }
+
+
         return result;
       }
   },
