@@ -45,7 +45,7 @@ function buildMenu(wiki)
 {
   var item = {
     title: wiki.name,
-    hiddenOnCollapse: true
+    hiddenOnCollapse: false
   };
 
   if (isFile(wiki)) {

@@ -55,5 +55,44 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+
+  .v-sidebar-menu .vsm--link.vsm--link_active {
+
+  }
+  .v-sidebar-menu .vsm--link.vsm--link_exact-active {
+    color: darkgray !important;
+  }
+  .v-sidebar-menu.vsm_expanded .vsm--item_open .vsm--link_level-1
+  {
+    background: none !important;
+  }
+  .v-sidebar-menu .vsm--toggle-btn {
+    display: none !important;
+  }
+
+  .v-sidebar-menu .vsm--arrow:after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 5px;
+    margin-top: -5px;
+    background-color: lightgray;
+    transform: rotate(45deg);
+  }
+
+  .v-sidebar-menu .vsm--arrow:before {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 5px;
+    margin-top: 4px;
+    background-color: lightgray;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
+    transform: rotate(-45deg);
+  }
+
+  .v-sidebar-menu .vsm--arrow:hover {
+    animation: arrow-1 1s linear infinite;
+  }
 </style>
