@@ -74,9 +74,9 @@ export default {
   .v-sidebar-menu .vsm--arrow:after {
     content: '';
     position: absolute;
-    width: 15px;
-    height: 5px;
-    margin-top: -5px;
+    width: 10px;
+    height: 3px;
+    margin-top: -3px;
     background-color: lightgray;
     transform: rotate(45deg);
   }
@@ -84,9 +84,9 @@ export default {
   .v-sidebar-menu .vsm--arrow:before {
     content: '';
     position: absolute;
-    width: 15px;
-    height: 5px;
-    margin-top: 4px;
+    width: 10px;
+    height: 3px;
+    margin-top: 2px;
     background-color: lightgray;
     box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
     transform: rotate(-45deg);
