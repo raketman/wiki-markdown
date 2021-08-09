@@ -16,7 +16,7 @@ WORKDIR /var/www/app
 RUN yum -y install git
 RUN git clone https://github.com/raketman/wiki-markdown.git .
 
-WORKDIR /var/www/app/bin
+WORKDIR /var/www/cmd
 RUN curl -L https://install.meilisearch.com | sh
 #RUN mv /var/www/cmd/meilisearch /usr/local/bin/meilisearch
 
