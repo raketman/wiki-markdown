@@ -43,7 +43,27 @@ export default {
           item = wikiHelper.findFirstFile(store.getters['wiki/list'].childs);
       }
 
-      store.dispatch('wiki/page', item).then(() => store.commit('wiki/query', ""))
+      store.dispatch('wiki/page', item)
+        .then(() => store.commit('wiki/query', ""))
+        .then( () => {
+          if (!route.hash) {
+            return;
+          }
+
+          setTimeout(() => {
+
+            var doc = window.document.querySelector(route.hash);
+            if (!doc) {
+              return;
+            }
+
+
+            window.scrollTo({
+              top: doc.offsetTop
+            })
+          }, 100)
+
+        })
 
     } catch (err) {
       console.log(err)
