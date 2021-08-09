@@ -61,6 +61,7 @@ final class SearchExporter {
 
         if ($item->getType() === WikiType::FILE) {
             $result[] = [
+                'search_id' => md5($item->getId()),
                 'id'        => $item->getId(),
                 'content'   => $this->extractor->getPageContent($item->getPath()),
                 'name'      => $item->getName()
