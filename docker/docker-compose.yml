@@ -4,10 +4,13 @@ services:
     # тут только Dockerfile php + symfony run server
 
     wiki-app:
+        volumes:
+            - ../:/var/www/app
         restart: unless-stopped
-        command: sleep 3000
+        #command: sleep 3000
         build:
-            dockerfile: Dockerfile
+            dockerfile: centos.dockerfile
             context: ./
         ports:
-            - 56788:8000
+            - 74:8000
+            - 73:8001

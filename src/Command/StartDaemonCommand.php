@@ -61,7 +61,7 @@ class StartDaemonCommand extends Command
             ->setDescription('Запускает демон, который запустит и будет следить за исполнением сконфигурированных фоновых процессов')
             ->addOption('max-execution-time', null, InputOption::VALUE_REQUIRED, 'Максимальное время выполнения команды в секундах', 360000)
             ->addOption('pid-file', null, InputOption::VALUE_REQUIRED, 'PID файл', __DIR__ . '/../../run/pid')
-            ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Время задержки между внутренними циклами для экономии процессора', 1000)
+            ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Время задержки между внутренними циклами для экономии процессора', 100000)
         ;
     }
 
@@ -133,18 +133,26 @@ class StartDaemonCommand extends Command
             // Проверим состояние фоновых процессов,
             // при необходимости перезапустим
 
-            foreach ($this->processList as $key => $item) {
+            foreach ($this->processList as $key => &$item) {
                 /* @var $p Process */
                 $p = $item['process'];
                 $this->checkProcessOutput($p);
                 if (!$p->isRunning()) {
-                    $this->logger->critical("Background process $key failed!", [
-                        'command' => $p->getCommandLine(),
-                        'exit_code' => $p->getExitCode(),
-                        'output' => $p->getOutput(),
-                        'err_output' => $p->getErrorOutput()
-                    ]);
-                    $p->start();
+                    if (!isset($item['start'])) {
+                        $this->logger->critical("Background process $key failed!", [
+                            'command' => $p->getCommandLine(),
+                            'exit_code' => $p->getExitCode(),
+                            'output' => $p->getOutput(),
+                            'err_output' => $p->getErrorOutput()
+                        ]);
+
+                        $item['start'] = time() + $item['interval'];
+                    }
+
+                    if ($item['start'] < time()) {
+                        $p->start();
+                        unset($item['start']);
+                    }
                 }
 
                 // Запустим команды с задержкой
@@ -164,23 +172,40 @@ class StartDaemonCommand extends Command
         $processes = [];
 
         $serverCommand = [
-            '/usr/local/bin/symfony',
-            'serve'
+            '/usr/bin/php',
+            '-S',
+            '0.0.0.0:8000',
+            '-t',
+            '/var/www/app/public/',
+            '/var/www/app/public/router.php',
         ];
 
         $processes['server'] = [
-            'process'   => new Process($serverCommand, '/var/www/app'),
+            'process'   => new Process($serverCommand, '/var/www/app/public'),
             'interval'  => 0
         ];
 
         $meilisearchCommand = sprintf(
-            'meilisearch --http-addr \'127.0.0.1:7700\''
+            './meilisearch'
+            //'--http-addr',
+            //'0.0.0.0:7700'
         );
 
-//        $processes['meilisearch'] = [
-//            'process'   =>  new Process([$meilisearchCommand]),
-//            'interval'  => 0
-//        ];
+        $processes['meilisearch'] = [
+            'process'   =>  new Process([$meilisearchCommand]),
+            'interval'  => 0
+        ];
+
+        $wikiActualize = [
+            '/usr/bin/php',
+            '/var/www/app/bin/console',
+            'app:wiki:actualize',
+        ];
+
+        $processes['wiki'] = [
+            'process'   => new Process($wikiActualize, '/var/www/app'),
+            'interval'  => 60
+        ];
 
         return $processes;
     }

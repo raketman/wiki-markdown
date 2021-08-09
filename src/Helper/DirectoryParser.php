@@ -137,7 +137,7 @@ class DirectoryParser {
 
     private function getNameFromMarkdown($file)
     {
-        // TODO: первую непустую или из файла .meta?!
+        // TODO: первую где есть #
         $res = \fopen($file, 'r');
 
         $name = \fgets($res);
