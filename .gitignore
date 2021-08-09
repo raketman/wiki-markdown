@@ -17,7 +17,8 @@ docker/volumes
 /phpunit.xml
 ###< symfony/phpunit-bridge ###\
 
-public/
+/public/*
+!/public/_appsource/
 !public/index.php
 !public/router.php
 !public/favicon.ico
