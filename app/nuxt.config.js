@@ -1,6 +1,6 @@
 export default {
   axios: {
-    baseURL: 'http://localhost:8000', // Used as fallback if no runtime config is provided
+    baseURL: '/'
   },
 
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
