@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Enum\WikiType;
 use App\Helper\DirectoryParser;
-use App\Helper\UrlCreator;
+use App\Helper\FileParser;
 use App\Model\WikiItem;
 use App\Model\WikiLink;
 use \RuntimeException;
@@ -17,8 +17,8 @@ final class Extractor {
     /** @var SerializerInterface */
     private $serializer;
 
-    /** @var UrlCreator  */
-    private $urlCreator;
+    /** @var FileParser  */
+    private $fileParser;
 
 
     public function __construct(SerializerInterface  $serializer, string $sourceDir, string $cacheStructureFile, string $publicDir)
@@ -34,7 +34,7 @@ final class Extractor {
             throw new \RuntimeException(\error_get_last()['message'], \error_get_last()['type']);
         }
 
-        $this->urlCreator = new UrlCreator();
+        $this->fileParser = new FileParser();
     }
 
     public function hasChange(): bool
@@ -88,17 +88,9 @@ final class Extractor {
         } else {
             $content = [];
 
-            // Добавим ссылки
-            $res = \fopen($pagePath, 'r');
 
-            // Пропуска название
-            $content[] = \fgets($res);
-
-            while(!\feof($res)) {
-                $str =  \trim(\fgets($res));
-
-                if (\strpos($str, '#') === 0) {
-                    $link = new WikiLink($this->urlCreator->clean($str),  (new UrlCreator())->createHashUrl(\str_replace('\\', '/', $page), $this->urlCreator->clean($str)));
+            $this->fileParser->linkParser($page, $pagePath, function ($str, WikiLink $link = null) use (&$content) {
+                if ($link) {
                     $counter = 0;
                     $symbol = \substr($str, $counter, 1);
                     while($symbol === '#') {
@@ -109,8 +101,7 @@ final class Extractor {
                 } else {
                     $content[] = $str;
                 }
-            }
-            \fclose($res);
+            });
 
             return \implode(PHP_EOL, $content);
         }

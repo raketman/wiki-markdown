@@ -2,7 +2,11 @@
 
 namespace App\Helper;
 
-class UrlCreator {
+use App\Model\WikiLink;
+
+class FileParser
+{
+    private const CODE_DEF = '```';
 
     public function createHashUrl($id, $title)
     {
@@ -19,6 +23,33 @@ class UrlCreator {
     public function clean($str)
     {
         return \strip_tags(\trim(\str_replace([PHP_EOL, "\r\n", "#"], "", $str)));
+    }
+
+    public function linkParser($url, $file, callable $linkFindFunction)
+    {
+        // Вынести в отдельный файл, смотреть, что нет ```
+        $res = \fopen($file, 'r');
+
+        // Пропуска название
+        \fgets($res);
+
+        $codDef = false;
+
+        while(!feof($res)) {
+            $str =  \trim(\fgets($res));
+
+            if ( 0 === strpos($str, static::CODE_DEF)) {
+                $codDef = !$codDef;
+            }
+            $link = null;
+
+            if (!$codDef && strpos($str, '#') === 0) {
+                $link = new WikiLink( $this->clean($str),  $this->createHashUrl(str_replace('\\', '/', $url), $this->clean($str)));
+
+            }
+            $linkFindFunction($str, $link);
+        }
+        \fclose($res);
     }
 }
 

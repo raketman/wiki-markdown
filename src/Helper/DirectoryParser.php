@@ -11,14 +11,14 @@ use Symfony\Component\Yaml\Yaml;
 class DirectoryParser {
     private $wikiDir;
 
-    /** @var UrlCreator  */
-    private $urlCreator;
+    /** @var FileParser  */
+    private $fileParser;
 
     public function __construct(string $wikiDir)
     {
         $this->wikiDir = $wikiDir;
 
-        $this->urlCreator = new UrlCreator();
+        $this->fileParser = new FileParser();
     }
 
     public function parse(): WikiItem
@@ -72,7 +72,7 @@ class DirectoryParser {
         while ($iterator->valid()) {
             $item = $iterator->current();
 
-            if ($item->isDot() || $item->getBasename() == '.meta') {
+            if ($item->isDot() || $item->getBasename() == '.meta' || $this->isIgnoreFiles($item)) {
                 $iterator->next();
                 continue;
             }
@@ -87,6 +87,7 @@ class DirectoryParser {
                     (new WikiOption())->setExtension(pathinfo($item->getPathname(), PATHINFO_EXTENSION))
                 );
             }elseif ($item->isDir()) {
+
                 $result[] = new WikiItem(
                     WikiType::DIR,
                     $path,
@@ -142,28 +143,19 @@ class DirectoryParser {
         $name = \fgets($res);
         \fclose($res);
 
-        return  $this->urlCreator->clean($name);
+        return  $this->fileParser->clean($name);
     }
 
 
-    private function getLinksFromMarkdown($path, $file)
+    private function getLinksFromMarkdown($url, $file)
     {
-        $res = \fopen($file, 'r');
-
-        // Пропуска название
-        \fgets($res);
-
-
         $links = [];
 
-        while(!feof($res)) {
-            $str =  \fgets($res);
-
-            if (strpos($str, '#') === 0) {
-                $links[] = new WikiLink( $this->urlCreator->clean($str),  $this->urlCreator->createHashUrl(str_replace('\\', '/', $path), $this->urlCreator->clean($str)));
+        $this->fileParser->linkParser($url, $file, function ($str, $link) use(&$links) {
+            if ($link) {
+                $links[] = $link;
             }
-        }
-        \fclose($res);
+        });
 
         return $links;
     }
@@ -174,5 +166,17 @@ class DirectoryParser {
         return \str_replace($this->wikiDir, '', $path);
     }
 
+
+    private function isIgnoreFiles(\DirectoryIterator $filename)
+    {
+        if ($filename->isDir()) {
+            return false;
+        }
+
+        return
+            0 === strpos($filename->getBasename(), '_')
+            || strpos($filename->getPathname(), '.') < 1
+            || $filename->getExtension() === 'html';
+    }
 }
 
