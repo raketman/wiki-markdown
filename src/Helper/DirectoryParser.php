@@ -11,9 +11,14 @@ use Symfony\Component\Yaml\Yaml;
 class DirectoryParser {
     private $wikiDir;
 
+    /** @var UrlCreator  */
+    private $urlCreator;
+
     public function __construct(string $wikiDir)
     {
         $this->wikiDir = $wikiDir;
+
+        $this->urlCreator = new UrlCreator();
     }
 
     public function parse(): WikiItem
@@ -96,7 +101,7 @@ class DirectoryParser {
                     $this->getNameFromMarkdown($item->getPathname()),
                     (new WikiOption())
                         ->setExtension(pathinfo($item->getPathname(), PATHINFO_EXTENSION))
-                        ->setLinks($this->getLinksFromMarkdown($item->getPathname()))
+                        ->setLinks($this->getLinksFromMarkdown($path, $item->getPathname()))
                 );
             }
 
@@ -137,13 +142,12 @@ class DirectoryParser {
         $name = \fgets($res);
         \fclose($res);
 
-        return $this->clean($name);
+        return  $this->urlCreator->clean($name);
     }
 
 
-    private function getLinksFromMarkdown($file)
+    private function getLinksFromMarkdown($path, $file)
     {
-        // TODO: первую непустую или из файла .meta?!
         $res = \fopen($file, 'r');
 
         // Пропуска название
@@ -155,14 +159,8 @@ class DirectoryParser {
         while(!feof($res)) {
             $str =  \fgets($res);
 
-            if (strpos($str, '#') === 0 && strpos($str, '<a') > 0) {
-
-                $returnValue = preg_match_all('/id=\"(.*?)\"/', $str, $matches);
-
-                if (isset($matches[1][0])) {
-                    $links[] = new WikiLink($this->clean($str), $matches[1][0]);
-                }
-
+            if (strpos($str, '#') === 0) {
+                $links[] = new WikiLink( $this->urlCreator->clean($str),  $this->urlCreator->createHashUrl(str_replace('\\', '/', $path), $this->urlCreator->clean($str)));
             }
         }
         \fclose($res);
@@ -176,9 +174,5 @@ class DirectoryParser {
         return \str_replace($this->wikiDir, '', $path);
     }
 
-    private function clean($str)
-    {
-        return \strip_tags(\trim(\str_replace([PHP_EOL, "\r\n", "#"], "", $str)));
-    }
 }
 

@@ -4,7 +4,9 @@ namespace App\Service;
 
 use App\Enum\WikiType;
 use App\Helper\DirectoryParser;
+use App\Helper\UrlCreator;
 use App\Model\WikiItem;
+use App\Model\WikiLink;
 use \RuntimeException;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -15,6 +17,10 @@ final class Extractor {
     /** @var SerializerInterface */
     private $serializer;
 
+    /** @var UrlCreator  */
+    private $urlCreator;
+
+
     public function __construct(SerializerInterface  $serializer, string $sourceDir, string $cacheStructureFile, string $publicDir)
     {
         $this->serializer = $serializer;
@@ -22,20 +28,22 @@ final class Extractor {
         $this->sourceDir = $sourceDir;
         $this->publicDir = $publicDir;
 
-        $dir = dirname($this->cacheStructureFile);
+        $dir = \dirname($this->cacheStructureFile);
 
-        if(!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new \RuntimeException(error_get_last()['message'], error_get_last()['type']);
+        if(!\is_dir($dir) && !\mkdir($dir, 0755, true) && !\is_dir($dir)) {
+            throw new \RuntimeException(\error_get_last()['message'], \error_get_last()['type']);
         }
+
+        $this->urlCreator = new UrlCreator();
     }
 
     public function hasChange(): bool
     {
-        if (false === file_exists($this->cacheStructureFile)) {
+        if (false === \file_exists($this->cacheStructureFile)) {
             return true;
         }
 
-        $time = filemtime ($this->cacheStructureFile);
+        $time = \filemtime ($this->cacheStructureFile);
 
 
         $dirChangeTime = (new DirectoryParser($this->sourceDir))->getLastChangeTime($time);
@@ -57,14 +65,14 @@ final class Extractor {
 
         $json = $this->serializer->serialize($data, 'json');
 
-        if (false === file_put_contents($this->cacheStructureFile, $json)) {
-            throw new \RuntimeException(error_get_last()['message'], error_get_last()['type']);
+        if (false === \file_put_contents($this->cacheStructureFile, $json)) {
+            throw new \RuntimeException(\error_get_last()['message'], \error_get_last()['type']);
         }
     }
 
     public function getListContent()
     {
-        if (!file_exists($this->cacheStructureFile)) {
+        if (!\file_exists($this->cacheStructureFile)) {
             $this->extract();
         }
 
@@ -73,12 +81,38 @@ final class Extractor {
 
     public function getPageContent($page)
     {
-        $pagePath = sprintf('%s%s',$this->sourceDir, $page);
+        $pagePath = \sprintf('%s%s',$this->sourceDir, $page);
 
-        if (!file_exists($pagePath)) {
+        if (!\file_exists($pagePath)) {
             throw new \RuntimeException("Не найдена страница", 500);
         } else {
-            return file_get_contents($pagePath);
+            $content = [];
+
+            // Добавим ссылки
+            $res = \fopen($pagePath, 'r');
+
+            // Пропуска название
+            $content[] = \fgets($res);
+
+            while(!\feof($res)) {
+                $str =  \trim(\fgets($res));
+
+                if (\strpos($str, '#') === 0) {
+                    $link = new WikiLink($this->urlCreator->clean($str),  (new UrlCreator())->createHashUrl(\str_replace('\\', '/', $page), $this->urlCreator->clean($str)));
+                    $counter = 0;
+                    $symbol = \substr($str, $counter, 1);
+                    while($symbol === '#') {
+                        $symbol = \substr($str, ++$counter, 1);
+                    }
+                    $prefix = \str_pad('',$counter, '#');
+                    $content[] = \sprintf('%s <a id="%s"></a>%s %s', $prefix, $link->getCode(), $link->getTitle(), $prefix);
+                } else {
+                    $content[] = $str;
+                }
+            }
+            \fclose($res);
+
+            return \implode(PHP_EOL, $content);
         }
 
     }
