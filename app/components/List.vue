@@ -19,8 +19,14 @@ export default {
     },
     select(item) {
       var wiki = wikiHelper.findWikiBy(this.$store.getters['wiki/list'], 'id', item.id);
-      this.$store.commit('wiki/query', "");
-      this.$router.push(wiki.id)
+      var selected = this.$store.getters['wiki/selected'];
+
+      if (selected.id === wiki.id) {
+        this.$store.commit('wiki/query', "");
+      } else {
+        this.$router.push(wiki.id);
+      }
+
     }
   }
 }

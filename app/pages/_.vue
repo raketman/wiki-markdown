@@ -31,7 +31,6 @@ export default {
       if (!store.getters['wiki/list']) {
         await store.dispatch('wiki/list')
       }
-      store.commit('wiki/query', "");
 
       // Выберем первый
       var routePath = decodeURI(route.path);
@@ -44,7 +43,7 @@ export default {
           item = wikiHelper.findFirstFile(store.getters['wiki/list'].childs);
       }
 
-      store.dispatch('wiki/page', item)
+      store.dispatch('wiki/page', item).then(() => store.commit('wiki/query', ""))
 
     } catch (err) {
       console.log(err)
