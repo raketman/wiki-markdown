@@ -47,6 +47,9 @@
             "config/packages/nyholm_psr7.yaml"
         ]
     },
+    "php": {
+        "version": "7.4"
+    },
     "php-http/client-common": {
         "version": "2.3.0"
     },
