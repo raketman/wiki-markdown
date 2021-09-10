@@ -319,6 +319,7 @@ class StartDaemonCommand extends Command
 
                     $this->logger->debug(__FUNCTION__, [
                         'line' => __LINE__,
+                        'message' => $myCmdLine . ' === ' . $runningCmdLine
                     ]);
                     return true;
 

@@ -22,3 +22,7 @@ docker/volumes
 !public/index.php
 !public/router.php
 !public/favicon.ico
+
+run
+data.ms
+meilisearch
