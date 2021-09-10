@@ -9,7 +9,7 @@ services:
         restart: unless-stopped
         #command: sleep 3000
         build:
-            dockerfile: centos.dockerfile
+            dockerfile: Dockerfile
             context: ./
         ports:
             - 74:8000

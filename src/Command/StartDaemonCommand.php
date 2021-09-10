@@ -139,7 +139,7 @@ class StartDaemonCommand extends Command
                 $this->checkProcessOutput($p);
                 if (!$p->isRunning()) {
                     if (!isset($item['start'])) {
-                        $this->logger->critical("Background process $key failed!", [
+                        $this->logger->info("Background process $key stop", [
                             'command' => $p->getCommandLine(),
                             'exit_code' => $p->getExitCode(),
                             'output' => $p->getOutput(),

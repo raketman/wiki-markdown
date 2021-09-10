@@ -26,3 +26,5 @@ docker/volumes
 run
 data.ms
 meilisearch
+
+docs*
