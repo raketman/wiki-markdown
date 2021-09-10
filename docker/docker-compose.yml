@@ -4,8 +4,8 @@ services:
     # тут только Dockerfile php + symfony run server
 
     wiki-app:
-        volumes:
-            - ../:/var/www/app
+#        volumes:
+#            - ../:/var/www/app
         restart: unless-stopped
         #command: sleep 3000
         build:
