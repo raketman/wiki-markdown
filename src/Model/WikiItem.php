@@ -12,17 +12,20 @@ class WikiItem
 
     private $name;
 
+    private $order;
+
     /** @var WikiOption  */
     private $options;
 
     /** @var WikiItem[] */
     private $childs;
 
-    public function __construct($type, $path, $name, WikiOption $options , array $childs = []) {
+    public function __construct($type, $path, $name, $order, WikiOption $options , array $childs = []) {
         $this->id = str_replace('\\', '/', $path);
         $this->path = $path;
         $this->type = $type;
         $this->name = $name;
+        $this->order = $order;
         $this->childs = $childs;
         $this->options = $options;
     }
@@ -86,4 +89,19 @@ class WikiItem
         return $this->options;
     }
 
+    /**
+     * @param mixed $order
+     */
+    public function setOrder($order): void
+    {
+        $this->order = $order;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
 }

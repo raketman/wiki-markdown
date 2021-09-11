@@ -25,12 +25,17 @@ class DirectoryParser {
     {
         $childs = $this->readDir($this->wikiDir);
 
-        return new WikiItem(
+        $meta = $this->getDataFromMeta($this->wikiDir);
+
+        $item = new WikiItem(
             WikiType::DIR,
             $this->getRelativePath($this->wikiDir),
-            $this->getNameFromMeta($this->wikiDir),
+            $meta['title'],
+            0,
             (new WikiOption())->setExtension(WikiType::DIR),
             $childs);
+
+        return $this->orderWikiDir($item, $meta['order']);
     }
 
     public function getLastChangeTime($lastTime, $dir = null)
@@ -69,6 +74,7 @@ class DirectoryParser {
 
         $iterator = new \DirectoryIterator($dir);
 
+        $counter = 0;
         while ($iterator->valid()) {
             $item = $iterator->current();
 
@@ -84,22 +90,31 @@ class DirectoryParser {
                     WikiType::RESOURCE,
                     $path,
                     $path,
+                    $counter++,
                     (new WikiOption())->setExtension(pathinfo($item->getPathname(), PATHINFO_EXTENSION))
                 );
             }elseif ($item->isDir()) {
 
-                $result[] = new WikiItem(
+
+                $meta = $this->getDataFromMeta($item->getPathname());
+                $dirItem = new WikiItem(
                     WikiType::DIR,
                     $path,
-                    $this->getNameFromMeta($item->getPathname()),
+                    $meta['title'],
+                    $counter++,
                     (new WikiOption())->setExtension(WikiType::DIR),
                     $this->readDir($item->getPathname())
                 );
+
+                $dirItem = $this->orderWikiDir($dirItem, $meta['order']);
+
+                $result[] = $dirItem;
             } else {
                 $result[] = new WikiItem(
                     WikiType::FILE,
                     $path,
                     $this->getNameFromMarkdown($item->getPathname()),
+                    $counter++,
                     (new WikiOption())
                         ->setExtension(pathinfo($item->getPathname(), PATHINFO_EXTENSION))
                         ->setLinks($this->getLinksFromMarkdown($path, $item->getPathname()))
@@ -112,6 +127,31 @@ class DirectoryParser {
         return $result;
     }
 
+
+    private function orderWikiDir(WikiItem $item, $order)
+    {
+        if (empty($order)) {
+            return $item;
+        }
+
+
+        $childs = $item->getChilds();
+        foreach ($childs as $child) {
+            $checkKey = mb_substr($child->getPath(), 1);
+            if (isset($order[$checkKey])) {
+                $child->setOrder($order[$checkKey]);
+            }
+        }
+
+        usort($childs, function(WikiItem $a, WikiItem  $b) {
+            return $a->getOrder() > $b->getOrder();
+        });
+
+        $item->setChilds($childs);
+
+        return $item;
+    }
+
     /**
      * @param \SplFileInfo $item
      * @return bool
@@ -121,18 +161,15 @@ class DirectoryParser {
         return !$item->isDir() && 0 !== \strpos(\mime_content_type ($item->getPathname()), 'text/');
     }
 
-    private function getNameFromMeta($dir)
+    private function getDataFromMeta($dir)
     {
         $metaFile = $dir . '/.meta';
         if (!\file_exists($metaFile)) {
             $paths = \explode('/', $dir);
-            return \end($paths);
+            return ['title' => \end($paths), 'order' => []];
         }
 
-        $data = Yaml::parse(file_get_contents($metaFile));
-
-
-        return $data['title'];
+        return array_merge(['title' => $dir, 'order' => []], (array)Yaml::parse(file_get_contents($metaFile)));
     }
 
     private function getNameFromMarkdown($file)
@@ -169,13 +206,18 @@ class DirectoryParser {
 
     private function isIgnoreFiles(\DirectoryIterator $filename)
     {
+        $firstSymbol = mb_substr($filename->getBasename(), 0, 1);
+
+
+        if (in_array($firstSymbol, ['_', '.'])) {
+            return true;
+        }
+
         if ($filename->isDir()) {
             return false;
         }
 
-        return
-            0 === strpos($filename->getBasename(), '_')
-            || strpos($filename->getPathname(), '.') < 1
+        return strpos($filename->getPathname(), '.') < 1
             || $filename->getExtension() === 'html';
     }
 }
