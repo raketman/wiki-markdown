@@ -1,1 +1,4 @@
 title: Вики
+order:
+    extra: 9999
+    more-pages.md: -10
