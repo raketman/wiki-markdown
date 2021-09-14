@@ -1,4 +1,5 @@
 title: Вики
 order:
-    extra: 9999
-    more-pages.md: -10
+    quickstart.md: -11
+    wiki.md: -9
+    search.md: -5
