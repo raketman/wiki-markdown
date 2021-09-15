@@ -127,8 +127,6 @@ final class Extractor {
             if (!\copy($sourceFile, $distFile)) {
                 throw new \RuntimeException(error_get_last()['message'], error_get_last()['code']);
             }
-            continue;
-
         }
 
     }

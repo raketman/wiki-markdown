@@ -209,14 +209,17 @@ class DirectoryParser {
         $firstSymbol = mb_substr($filename->getBasename(), 0, 1);
 
 
+        if ($filename->isDir()) {
+            if (in_array($firstSymbol, ['.'])) {
+                return true;
+            }
+            return false;
+        }
+        
         if (in_array($firstSymbol, ['_', '.'])) {
             return true;
         }
-
-        if ($filename->isDir()) {
-            return false;
-        }
-
+        
         return strpos($filename->getPathname(), '.') < 1
             || $filename->getExtension() === 'html';
     }

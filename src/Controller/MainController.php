@@ -17,7 +17,10 @@ class MainController extends AbstractController
      */
     public function getIndex()
     {
-        return new Response($this->renderView('index.html.twig'));
+        return new Response($this->renderView('index.html.twig', [
+            'prefix'    => getenv('APP_PREFIX') ? : '',
+            'baseUrl'   => getenv('APP_PREFIX') ? : '/',
+        ]));
     }
 
 }
