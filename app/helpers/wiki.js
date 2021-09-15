@@ -41,15 +41,17 @@ function findWikiBy(wiki, key, value)
   return null
 }
 
-function buildMenu(wiki)
+function buildMenu(wiki, prefix)
 {
+  prefix = prefix ? prefix : '';
+
   var item = {
     title: wiki.name,
     hiddenOnCollapse: false
   };
 
   if (isFile(wiki)) {
-    item.href = wiki.id;
+    item.href = prefix + wiki.id;
 
     if (wiki.options.links.length > 0) {
       item.child = [];
@@ -57,7 +59,7 @@ function buildMenu(wiki)
       for (var linkKey in wiki.options.links) {
         var link = wiki.options.links[linkKey];
         item.child.push({
-          href: wiki.id +'#' + link.code,
+          href: prefix + wiki.id +'#' + link.code,
           title: ' - ' + link.title,
           hiddenOnCollapse: true
         })

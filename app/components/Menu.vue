@@ -34,12 +34,12 @@ export default {
         }];
 
         for(var child in wiki.childs) {
-          result.push(wikiHelper.buildMenu(wiki.childs[child]))
+          result.push(wikiHelper.buildMenu(wiki.childs[child], this.$config.app.prefix))
         }
 
         // чтобы при открытии / открывался нужный элемент
         if (result[1]) {
-          result[1].alias = ['/'];
+          result[1].alias = [this.$config.app.prefix ? this.$config.app.prefix : '/'];
         }
 
 

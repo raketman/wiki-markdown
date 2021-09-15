@@ -3,6 +3,10 @@ export default {
     baseURL: '/'
   },
 
+  app: {
+      prefix: ''
+  },
+
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
 

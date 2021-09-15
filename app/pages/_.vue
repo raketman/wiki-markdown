@@ -27,19 +27,26 @@ import wikiHelper from '../helpers/wiki'
 
 export default {
   async asyncData ({ app, route, params, error, store }) {
+    let prefix = app.$config.app.prefix;
     try {
       if (!store.getters['wiki/list']) {
         await store.dispatch('wiki/list')
       }
 
-      // Выберем первый
-      var routePath = decodeURI(route.path);
-      var item = null;
-      if (routePath) {
-        var item = wikiHelper.findWikiBy(store.getters['wiki/list'], 'id', routePath);
+      let routePath = decodeURI(route.path);
+      if (prefix) {
+        routePath = routePath.replace(prefix, '');
+        if (routePath === '') {
+          routePath = '/'
+        }
       }
 
-      if (!item) {
+      let item = null;
+      if (routePath) {
+        let item = wikiHelper.findWikiBy(store.getters['wiki/list'], 'id', routePath);
+      }
+
+      if (!item) {  // Выберем первый
           item = wikiHelper.findFirstFile(store.getters['wiki/list'].childs);
       }
 
