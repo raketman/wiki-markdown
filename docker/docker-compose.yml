@@ -4,13 +4,29 @@ services:
     # тут только Dockerfile php + symfony run server
 
     wiki-app:
-#        volumes:
-#            - ../:/var/www/app
+        environment:
+            APP_PREFIX: /dev/wiki
+        volumes:
+            - ../:/var/www/app
         restart: unless-stopped
-        #command: sleep 3000
         build:
             dockerfile: Dockerfile
             context: ./
         ports:
             - 74:8000
             - 73:8001
+    wiki-nginx:
+        image: nginx:stable-alpine
+        volumes:
+            - ./system/nginx/:/etc/nginx/conf.d/
+        command: /bin/sh -c "
+            envsubst '$$APP_PREFIX' < /etc/nginx/conf.d/wiki.conf.template > /etc/nginx/conf.d/wiki.conf
+            && exec nginx -g 'daemon off;'"
+        environment:
+            APP_PREFIX: /dev/wiki
+        links:
+            - wiki-app
+        depends_on:
+            - wiki-app
+        ports:
+            - 75:80
