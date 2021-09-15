@@ -24,7 +24,7 @@ export default {
       if (selected.id === wiki.id) {
         this.$store.commit('wiki/query', "");
       } else {
-        this.$router.push(wiki.id);
+        this.$router.push(this.$config.app.prefix + wiki.id);
       }
 
     }

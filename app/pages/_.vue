@@ -27,13 +27,13 @@ import wikiHelper from '../helpers/wiki'
 
 export default {
   async asyncData ({ app, route, params, error, store }) {
-    let prefix = app.$config.app.prefix;
+    var prefix = app.$config.app.prefix;
     try {
       if (!store.getters['wiki/list']) {
         await store.dispatch('wiki/list')
       }
 
-      let routePath = decodeURI(route.path);
+      var routePath = decodeURI(route.path);
       if (prefix) {
         routePath = routePath.replace(prefix, '');
         if (routePath === '') {
@@ -41,9 +41,9 @@ export default {
         }
       }
 
-      let item = null;
+      var item = null;
       if (routePath) {
-        let item = wikiHelper.findWikiBy(store.getters['wiki/list'], 'id', routePath);
+          item = wikiHelper.findWikiBy(store.getters['wiki/list'], 'id', routePath);
       }
 
       if (!item) {  // Выберем первый

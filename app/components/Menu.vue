@@ -39,7 +39,11 @@ export default {
 
         // чтобы при открытии / открывался нужный элемент
         if (result[1]) {
-          result[1].alias = [this.$config.app.prefix ? this.$config.app.prefix : '/'];
+          result[1].alias = ['/'];
+
+          if (this.$config.app.prefix) {
+            result[1].alias.push(this.$config.app.prefix)
+          }
         }
 
 

@@ -3,7 +3,7 @@
     <div class="fias-container fias-container-multi">
       <ul class="fias-choices">
         <li class="search-field" v-bind:class="{ 'fias-width100': isInputWidth100 }">
-          <input v-model="searchField"  v-bind:class="{ 'fias-width100': isInputWidth100 }" type="text" placeholder="Поиск"  autocomplete="off" v-on:keyup="search" >
+          <input v-model="searchField"  v-bind:class="{ 'fias-width100': isInputWidth100 }" type="text" placeholder="Search"  autocomplete="off" v-on:keyup="search" >
         </li>
       </ul>
       <div class="fias-stop" v-show="isSearchField" v-on:click="reset"></div>
