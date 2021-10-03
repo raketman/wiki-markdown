@@ -23,7 +23,7 @@ docker/volumes
 !public/router.php
 !public/favicon.ico
 
-run
+run/pid
 data.ms
 meilisearch
 
