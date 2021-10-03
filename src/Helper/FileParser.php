@@ -36,7 +36,8 @@ class FileParser
         $codDef = false;
 
         while(!feof($res)) {
-            $str =  \trim(\fgets($res));
+            $origStr = \fgets($res);
+            $str =  \trim($origStr);
 
             if ( 0 === strpos($str, static::CODE_DEF)) {
                 $codDef = !$codDef;
@@ -45,9 +46,12 @@ class FileParser
 
             if (!$codDef && strpos($str, '#') === 0) {
                 $link = new WikiLink( $this->clean($str),  $this->createHashUrl(str_replace('\\', '/', $url), $this->clean($str)));
-
+                $linkFindFunction($str, $link);
+            } else{
+                $linkFindFunction($origStr, $link);
             }
-            $linkFindFunction($str, $link);
+
+
         }
         \fclose($res);
     }

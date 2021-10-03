@@ -44,7 +44,7 @@ class ApiController extends AbstractController
      */
     public function getPage(Request $request)
     {
-        return new JsonResponse($this->extractor->getPageContent( $request->get('page')));
+        return new Response($this->extractor->getPageContent( $request->get('page')));
     }
 
     /**
