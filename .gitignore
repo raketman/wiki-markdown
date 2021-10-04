@@ -28,3 +28,4 @@ data.ms
 meilisearch
 
 docs*
+!docs_example
