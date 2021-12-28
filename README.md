@@ -73,8 +73,8 @@ The file name is taken from the first line, the # symbols at the beginning and a
 
 Supported keys:
 ```yaml
-- title: folder name
-- order: # sorting within a folder, for point adjustment you can write values with a minus
+title: folder name
+order: # sorting within a folder, for point adjustment you can write values with a minus
     filename15: -10 # will be first
     dirname20: 99999 # will be at the end
     filename7: -7
