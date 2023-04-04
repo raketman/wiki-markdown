@@ -29,7 +29,7 @@ class ActualizeWikiCommand extends Command
     {
         $this
             ->setName('app:wiki:actualize')
-            ->addOption('force', null, InputOption::VALUE_OPTIONAL, 'Обновляем, если только изменилось время создания файлов', false)
+            ->addOption('force', null, InputOption::VALUE_OPTIONAL, 'Обновляем, если только изменилось время создания файлов', true)
             ->setDescription('Обновляем справочник вики')
         ;
 
